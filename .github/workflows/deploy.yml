@@ -43,6 +43,9 @@ jobs:
           script: |
             cd /home/user1/app || exit
             sudo docker pull dezenfection/mydigitalmaster
+            sudo docker stop mydigitalmaster || true
+            sudo docker rm mydigitalmaster || true
+            sudo docker run --name mydigitalmaster --restart unless-stopped dezenfection/mydigitalmaster
             
             
 
