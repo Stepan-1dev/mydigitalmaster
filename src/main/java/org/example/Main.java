@@ -2,7 +2,6 @@ package org.example;
 
 public class Main{
     static void main() {
-        Thread thread = Thread.currentThread();
         try {
             while (true) {
                 System.out.println("Проверка проекта");
