@@ -45,7 +45,7 @@ jobs:
             sudo docker pull dezenfection/mydigitalmaster
             sudo docker stop mydigitalmaster || true
             sudo docker rm mydigitalmaster || true
-            sudo docker run -d --name mydigitalmaster --restart unless-stopped dezenfection/mydigitalmaster
+            sudo docker run -d --name mydigitalmaster -p 9090:8080 --restart unless-stopped dezenfection/mydigitalmaster
             
             
 
