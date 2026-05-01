@@ -48,5 +48,5 @@ jobs:
             sudo docker run -d --name mydigitalmaster -p 9090:8080 --restart unless-stopped dezenfection/mydigitalmaster
             
             
-
+й
 
