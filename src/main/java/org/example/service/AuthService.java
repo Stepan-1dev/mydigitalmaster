@@ -54,7 +54,6 @@ public class AuthService {
                 Long userId = (Long) userIdObj;
             }
 
-
             return ExchangeStatus.SUCCESS;
         }
         else{
