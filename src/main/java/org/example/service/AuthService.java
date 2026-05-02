@@ -1,5 +1,7 @@
 package org.example.service;
 import org.example.entity.ExchangeStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
     Map<Long, Map<String, Object>> userTokens = new ConcurrentHashMap<>();
 
     public ExchangeStatus echangeCodeToTokens(AuthInfoForExchange authInfoForExchange){
@@ -52,10 +55,12 @@ public class AuthService {
 
             Long userId = (Long) userIdObj;
 
+            log.info("Code exchange for tokens is SUCCESS");
             return ExchangeStatus.SUCCESS;
         }
 
         else{
+            log.info("Code exchange for tokens is FAIL");
             return ExchangeStatus.FAIL;
         }
 
