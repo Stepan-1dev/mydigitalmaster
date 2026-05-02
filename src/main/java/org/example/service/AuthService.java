@@ -46,13 +46,22 @@ public class AuthService {
 
         String url = "https://id.vk.ru/oauth2/auth";
 
+        //Отправляем запрос и получаем ответ от VK
         ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
 
+        // Проверяем код ответа
         if(response.getStatusCode().is2xxSuccessful()){
 
-            Map<String, Object> bodyOfRequest = response.getBody();
-            Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
+            //Проверяем вернулась ли ошибка
+            if(response.getBody().containsKey("error")){
+                return ExchangeStatus.FAIL;
+            }
 
+            // Извлекаем тело ответа
+            Map<String, Object> bodyOfRequest = response.getBody();
+
+            //Извлекаем из тела ответа userId
+            Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
             Long userId = (Long) userIdObj;
 
             log.info("Code exchange for tokens is SUCCESS");
