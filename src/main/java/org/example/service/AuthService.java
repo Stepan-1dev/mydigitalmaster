@@ -57,8 +57,8 @@ public class AuthService {
                 log.info("ERROR was given by VK");
 
                 //Вывод логов ошибки от VK ID
-                log.info(response.getBody().get("error").toString());
-                log.info(response.getBody().get("error_description").toString());
+                log.info("error" + response.getBody().get("error").toString());
+                log.info("error_description" + response.getBody().get("error_description"));
 
                 return ExchangeStatus.FAIL;
             }
