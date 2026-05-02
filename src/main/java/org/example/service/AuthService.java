@@ -21,7 +21,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AuthService {
 
     private static final Logger log = LoggerFactory.getLogger(AuthService.class);
-    Map<Long, Map<String, Object>> userTokens = new ConcurrentHashMap<>();
+    // Map для хранения токенов
+    Map<Integer, Map<String, Object>> userTokens = new ConcurrentHashMap<>();
 
     public ExchangeStatus echangeCodeToTokens(AuthInfoForExchange authInfoForExchange){
         //Создаем HTTP клиент
@@ -68,7 +69,7 @@ public class AuthService {
 
             //Извлекаем из тела ответа userId
             Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
-            Long userId = (Long) userIdObj;
+            Integer userId = (Integer) userIdObj;
 
             //Сохранить токены в MAP(БД)
             userTokens.put(userId, bodyOfRequest);
