@@ -70,6 +70,9 @@ public class AuthService {
             Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
             Long userId = (Long) userIdObj;
 
+            //Сохранить токены в MAP(БД)
+            userTokens.put(userId, bodyOfRequest);
+
             log.info("Code exchange for tokens is SUCCESS");
             return ExchangeStatus.SUCCESS;
         }
