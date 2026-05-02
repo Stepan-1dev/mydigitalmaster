@@ -31,7 +31,7 @@ public class AuthService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("code_verifier", authInfoForExchange.codeVerifier());
-        params.add("redirect_uri", "vk54563806://vk.ru");
+        params.add("redirect_uri", "vk54563806://vk.ru/blank.html");
         params.add("code", authInfoForExchange.code());
         params.add("client_id", "54563806");
         params.add("device_id", authInfoForExchange.deviceId());
