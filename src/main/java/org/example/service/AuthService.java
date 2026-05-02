@@ -28,7 +28,7 @@ public class AuthService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("code_verifier", authInfoForExchange.codeVerifier());
-        params.add("redirect_uri", "vk54563806://vk.ru/blank.html");
+        params.add("redirect_uri", "vk54563806://vk.ru");
         params.add("code", authInfoForExchange.code());
         params.add("client_id", "54563806");
         params.add("device_id", authInfoForExchange.deviceId());
@@ -50,12 +50,11 @@ public class AuthService {
             Map<String, Object> bodyOfRequest = response.getBody();
             Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
 
-            if(userIdObj != null){
-                Long userId = (Long) userIdObj;
-            }
+            Long userId = (Long) userIdObj;
 
             return ExchangeStatus.SUCCESS;
         }
+
         else{
             return ExchangeStatus.FAIL;
         }
