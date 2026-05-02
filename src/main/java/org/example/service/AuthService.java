@@ -54,7 +54,8 @@ public class AuthService {
 
             //Проверяем вернулась ли ошибка
             if(response.getBody().containsKey("error")){
-                log.info("Code exchange for tokens is FAIL");
+                log.info("ERROR was given by VK");
+
                 return ExchangeStatus.FAIL;
             }
 
