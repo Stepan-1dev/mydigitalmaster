@@ -1,0 +1,3 @@
+spring:
+  datasource:
+    password: ${POSTGRES_PASSWORD}
