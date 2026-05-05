@@ -50,13 +50,13 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           script: |
             cd ~/SL
-            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            sudo echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
-            docker compose pull
+            sudo docker compose pull
             
-            docker compose up -d --remove-orphans
+            sudo docker compose up -d --remove-orphans
             
-            docker image prune -f
+            sudo docker image prune -f
   
             
             
