@@ -3,14 +3,32 @@ services:
     build: .
     container_name: mydigitalmaster_backend_сontainer
     ports:
-      - "9090:8080"
+      - "127.0.0.1:9090:8080"
+    depends_on:
+      db:
+        condition: service_healthy  # Ждем запуска БД
 
-  database:
-    image: postgres:18
+
+  db:
+    image: postgres:17-alpine
     container_name: postgreSQL_db_container
     environment:
-      - POSTGRES_DB=db
-      - POSTGRES_USER=dezen
-      - POSTGRES_PASSWORD=
+      - POSTGRES_DB= ${POSTGRES_DB:-db}
+      - POSTGRES_USER=${POSTGRES_USER:-dezen}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-easypasswordacheehedelat}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    restart: always
+
+    healthcheck: # Проверка готовности БД
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dezen} -d ${POSTGRES_DB:-db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
