@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: .
+    container_name: mydigitalmaster_backend_сontainer
+    ports:
+      - "9090:8080"
+
+  database:
+    image: postgres:18
+    container_name: postgreSQL_db_container
+    environment:
+      - POSTGRES_DB=db
+      - POSTGRES_USER=dezen
+      - POSTGRES_PASSWORD=
+    ports:
+      - "5432:5432"

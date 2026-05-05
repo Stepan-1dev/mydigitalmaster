@@ -27,10 +27,5 @@ public class AuthController {
         log.info("Called exhangeCodeToTokens");
         return authService.echangeCodeToTokens(authInfoForExchange);
     }
-
-    @GetMapping("/api/ping")
-    public String Testik(){
-        log.info("Called testik");
-        return "pong";
-    }
 }
+ 
