@@ -7,6 +7,7 @@ services:
     depends_on:
       db:
         condition: service_healthy  # Ждем запуска БД
+    restart: unless-stopped
 
 
   db:
@@ -25,7 +26,7 @@ services:
     restart: always
 
     healthcheck: # Проверка готовности БД
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dezen} -d ${POSTGRES_DB:-db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dezen} -d ${POSTGRES_DB:-db}"]
       interval: 5s
       timeout: 5s
       retries: 5
