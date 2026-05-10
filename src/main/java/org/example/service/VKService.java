@@ -112,6 +112,8 @@ public class VKService {
             }
 
             Map<String, Object> bodyOfRequest = responseFromVk.getBody();
+            log.info("VK response body: {}", bodyOfRequest); // ВРЕМЕННО
+
             log.info("getUserInfo is SUCCESS");
             return new UserProfile(
                     Long.valueOf(bodyOfRequest.get("user_id").toString()),
