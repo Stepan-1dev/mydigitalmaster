@@ -8,6 +8,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-easypasswordacheehedelat}
     ports:
       - "127.0.0.1:9090:8080"
+      - "[::1]:9090:8080"
     depends_on:
       db:
         condition: service_healthy  # Ждем запуска БД
