@@ -111,16 +111,21 @@ public class VKService {
                 throw new VkAuthException("Код ответа: " + responseFromVk.getStatusCode());
             }
 
+            //Вытаскиваем тело запроса
             Map<String, Object> bodyOfRequest = responseFromVk.getBody();
+
+            //Вытаскиваем данные из ключа user
+            Map<String, Object> user = (Map<String, Object>) bodyOfRequest.get("user");
+
             log.info("VK response body: {}", bodyOfRequest); // ВРЕМЕННО
 
             log.info("getUserInfo is SUCCESS");
             return new UserProfile(
-                    Long.valueOf(bodyOfRequest.get("user_id").toString()),
-                    String.valueOf(bodyOfRequest.get("first_name")),
-                    String.valueOf(bodyOfRequest.get("last_name")),
-                    String.valueOf(bodyOfRequest.get("avatar")),
-                    String.valueOf(bodyOfRequest.get("sex"))
+                    Long.valueOf(user.get("user_id").toString()),
+                    String.valueOf(user.get("first_name")),
+                    String.valueOf(user.get("last_name")),
+                    String.valueOf(user.get("avatar")),
+                    String.valueOf(user.get("sex"))
             );
         } else{
             log.info("getUserInfo is FAIL. " + "Status code: " + responseFromVk.getStatusCode());
