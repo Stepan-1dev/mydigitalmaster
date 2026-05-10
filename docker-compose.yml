@@ -6,7 +6,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-db}
       - POSTGRES_USER=${POSTGRES_USER:-dezen}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-easypasswordacheehedelat}
-      - POSTGRES_HOST=db
     ports:
       - "127.0.0.1:9090:8080"
     depends_on:
