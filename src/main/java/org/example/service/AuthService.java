@@ -1,87 +1,49 @@
 package org.example.service;
-import org.example.entity.ExchangeStatus;
+import org.example.dto.AuthResponse;
+import org.example.dto.VkAuthResponse;
+import org.example.entity.AuthInfoForLogin;
+import org.example.entity.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.example.entity.AuthInfoForExchange;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Optional;
 
 
 @Service
 public class AuthService {
+    private final Logger log = LoggerFactory.getLogger(AuthService.class);
+    private final VKService vkService;
+    private final UserProfileService userProfileService;
 
-    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
-    // Map для хранения токенов
-    Map<Integer, Map<String, Object>> userTokens = new ConcurrentHashMap<>();
+    public AuthResponse loginFromVK(AuthInfoForLogin authInfoForlogin) {
+        VkAuthResponse vkAuthResponse = vkService.getAccessTokenAndUserId(authInfoForlogin);
 
-    public ExchangeStatus echangeCodeToTokens(AuthInfoForExchange authInfoForExchange){
-        //Создаем HTTP клиент
-        RestTemplate restTemplate = new RestTemplate();
-
-        //Заполняем параметры запроса
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("code_verifier", authInfoForExchange.codeVerifier());
-        params.add("redirect_uri", "vk54563806://vk.ru/blank.html");
-        params.add("code", authInfoForExchange.code());
-        params.add("client_id", "54563806");
-        params.add("device_id", authInfoForExchange.deviceId());
-        params.add("state", authInfoForExchange.state());
-
-        //Заполняем хэддеры
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        //Создаем сущность http запроса
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, httpHeaders);
-
-        String url = "https://id.vk.ru/oauth2/auth";
-
-        //Отправляем запрос и получаем ответ от VK
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-
-        // Проверяем код ответа
-        if(response.getStatusCode().is2xxSuccessful()){
-
-            //Проверяем вернулась ли ошибка
-            if(response.getBody().containsKey("error")){
-                log.info("ERROR was given by VK");
-
-                //Вывод логов ошибки от VK ID
-                log.info("error" + response.getBody().get("error").toString());
-                log.info("error_description" + response.getBody().get("error_description"));
-
-                return ExchangeStatus.FAIL;
-            }
-
-            // Извлекаем тело ответа
-            Map<String, Object> bodyOfRequest = response.getBody();
-
-            //Извлекаем из тела ответа userId
-            Object userIdObj = bodyOfRequest.getOrDefault("user_id", null);
-            Integer userId = (Integer) userIdObj;
-
-            //Сохранить токены в MAP(БД)
-            userTokens.put(userId, bodyOfRequest);
-
-            log.info("Code exchange for tokens is SUCCESS");
-            return ExchangeStatus.SUCCESS;
+        // Проверяем, существует ли пользователь в БД
+        if(userProfileService.existsByUserVkId(vkAuthResponse.userId())){
+            //Если существует, то возвращаем его
+            return new AuthResponse(
+                    userProfileService.getUserProfile(vkAuthResponse.userId()),
+                    "Заглушка",
+                    "Заглушка"
+            );
+        } else{
+            //Если не существует, получаем данные о нем через VkService и сохраняем в бд, возвращая данные
+            UserProfile userProfile = vkService.getUserInfo(vkAuthResponse);
+            userProfileService.create(userProfile);
+            return new AuthResponse(
+                    userProfile,
+                    "Заглушка",
+                    "Заглушка"
+            );
         }
+    }
 
-        else{
-            log.info("Code exchange for tokens is FAIL");
-            return ExchangeStatus.FAIL;
-        }
-
+    @Autowired
+    public AuthService(VKService vkService, UserProfileService userProfileService){
+        this.vkService = vkService;
+        this.userProfileService = userProfileService;
     }
 }
+

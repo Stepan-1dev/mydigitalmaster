@@ -1,7 +1,7 @@
 package org.example.entity;
 
 
-public record AuthInfoForExchange(
+public record AuthInfoForLogin(
     String code,
     String codeVerifier,
     String deviceId,

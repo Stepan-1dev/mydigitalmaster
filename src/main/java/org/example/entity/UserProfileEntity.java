@@ -27,6 +27,16 @@ public class UserProfileEntity {
 
     public UserProfileEntity() {}
 
+
+    public UserProfileEntity(Long id, Long userVkId, String firstName, String lastName, String avatar, String sex) {
+        this.id = id;
+        this.userVkId = userVkId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.avatar = avatar;
+        this.sex = sex;
+    }
+
     public Long getId() {
         return id;
     }
@@ -74,4 +84,7 @@ public class UserProfileEntity {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
+
+
 }
