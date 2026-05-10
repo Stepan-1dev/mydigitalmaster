@@ -23,6 +23,7 @@ public class AuthService {
         // Проверяем, существует ли пользователь в БД
         if(userProfileService.existsByUserVkId(vkAuthResponse.userId())){
             //Если существует, то возвращаем его
+            log.info("The user exists in the database, attempt to return");
             return new AuthResponse(
                     userProfileService.getUserProfile(vkAuthResponse.userId()),
                     "Заглушка",
@@ -30,6 +31,8 @@ public class AuthService {
             );
         } else{
             //Если не существует, получаем данные о нем через VkService и сохраняем в бд, возвращая данные
+            log.info("The user does not exist, attempting to add him to the database");
+
             UserProfile userProfile = vkService.getUserInfo(vkAuthResponse);
             userProfileService.create(userProfile);
             return new AuthResponse(

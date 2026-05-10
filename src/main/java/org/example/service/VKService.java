@@ -117,9 +117,7 @@ public class VKService {
             //Вытаскиваем данные из ключа user
             Map<String, Object> user = (Map<String, Object>) bodyOfRequest.get("user");
 
-            log.info("VK response body: {}", bodyOfRequest); // ВРЕМЕННО
-
-            log.info("getUserInfo is SUCCESS");
+            log.info("getUserInfo in VKService is SUCCESS");
             return new UserProfile(
                     Long.valueOf(user.get("user_id").toString()),
                     String.valueOf(user.get("first_name")),
