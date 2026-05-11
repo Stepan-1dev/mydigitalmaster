@@ -53,11 +53,11 @@ public class VKService {
 
             //Проверяем вернулась ли ошибка
             if (responseFromVk.getBody().containsKey("error")) {
-                log.info("ERROR was given by VK");
+                log.info("Error was given by VK");
 
                 //Вывод логов ошибки от VK ID
-                log.info("error" + responseFromVk.getBody().get("error").toString());
-                log.info("error_description" + responseFromVk.getBody().get("error_description"));
+                log.info("Error: " + responseFromVk.getBody().get("error").toString());
+                log.info("Error_description: " + responseFromVk.getBody().get("error_description"));
 
                 throw new VkAuthException("Код ответа: " + responseFromVk.getStatusCode());
             }
@@ -69,10 +69,10 @@ public class VKService {
             String accessTokenOfUser = (String) bodyOfRequest.get("access_token");
             Long userId = Long.valueOf(bodyOfRequest.get("user_id").toString());
 
-            log.info("Code exchange for access token and user_id is SUCCESS");
+            log.info("Access token and user ID received.");
             return new VkAuthResponse(accessTokenOfUser, userId);
         } else {
-            log.info("Code exchange for access token and user_id is FAIL. " + "Status code: " + responseFromVk.getStatusCode());
+            log.info("Access token and user ID not received. " + "Status code: " + responseFromVk.getStatusCode());
             throw new VkAuthException("Ошибка. Код ответа от ВК: " + responseFromVk.getStatusCode());
         }
     }
@@ -105,8 +105,8 @@ public class VKService {
                 log.info("ERROR was given by VK");
 
                 //Вывод логов ошибки от VK ID
-                log.info("error" + responseFromVk.getBody().get("error").toString());
-                log.info("error_description" + responseFromVk.getBody().get("error_description"));
+                log.info("error: " + responseFromVk.getBody().get("error").toString());
+                log.info("error_description: " + responseFromVk.getBody().get("error_description"));
 
                 throw new VkAuthException("Код ответа: " + responseFromVk.getStatusCode());
             }

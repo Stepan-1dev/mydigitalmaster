@@ -19,7 +19,7 @@ public class UserProfileEntity {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "avatar")
+    @Column(name = "avatar", length = 512)
     private String avatar;
 
     @Column(name = "sex")
