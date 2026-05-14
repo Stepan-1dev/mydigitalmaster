@@ -12,8 +12,8 @@ public class TokensEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "refresh_token", unique = true, nullable = false)
-    private String refreshToken;
+    @Column(name = "refresh_token_hash", unique = true, nullable = false)
+    private String refreshTokenHash;
 
     @Column(name = "user_id", nullable = false, unique = true)
     private long userId;
@@ -32,11 +32,11 @@ public class TokensEntity {
     }
 
     public String getRefreshToken() {
-        return refreshToken;
+        return refreshTokenHash;
     }
 
     public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+        this.refreshTokenHash = refreshToken;
     }
 
     public long getUserId() {
@@ -55,9 +55,9 @@ public class TokensEntity {
         this.expiryDate = expiryDate;
     }
 
-    public TokensEntity(Long id, long userId, String refreshToken, Instant expiryDate) {
+    public TokensEntity(Long id, long userId, String refreshTokenHash, Instant expiryDate) {
         this.id = id;
-        this.refreshToken = refreshToken;
+        this.refreshTokenHash = refreshTokenHash;
         this.userId = userId;
         this.expiryDate = expiryDate;
     }

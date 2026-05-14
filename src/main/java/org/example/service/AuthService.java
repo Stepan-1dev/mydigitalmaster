@@ -50,9 +50,11 @@ public class AuthService {
             // Пихаем пользователя в бд
             userProfileService.create(userProfile);
 
-            //Создаем access и refresh токены
+            //Создаем access и refresh, hashRefresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
+            String refreshTokenHash = tokensService.hashToken(refreshToken);
+
             log.info("Tokens were created successfully");
 
             //Сохраняем токены в БД
@@ -62,7 +64,7 @@ public class AuthService {
             return new AuthResponse(
                     userProfile,
                     accessToken,
-                    refreshToken
+                    refreshTokenHash
             );
         }
     }

@@ -4,7 +4,11 @@ import org.example.entity.TokensEntity;
 import org.example.repository.TokensRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -31,5 +35,19 @@ public class TokensService {
          );
 
         repository.save(entityToSave);
+    }
+
+    public String hashToken(String rawToken) {
+        try {
+            // Используем стандартный алгоритм SHA-256
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(rawToken.getBytes(StandardCharsets.UTF_8));
+
+            // Переводим массив байтов в удобную строку Base64
+            return Base64.getEncoder().encodeToString(encodedHash);
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Ошибка хэширования токена", e);
+        }
     }
 }
