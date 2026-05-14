@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.entity.TokensEntity;
 import org.example.repository.TokensRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -23,6 +24,7 @@ public class TokensService {
         return UUID.randomUUID().toString();
     }
 
+    @Transactional
     public void create(Long userId, String refreshToken){
         //Удаялем предыдущую сессию(На всякий случай)
         repository.deleteByUserId(userId);
