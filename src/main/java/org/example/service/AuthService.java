@@ -22,6 +22,7 @@ public class AuthService {
 
         // Проверяем, существует ли пользователь в БД
         if(userProfileService.existsByUserVkId(vkAuthResponse.userId())){
+
             //Если существует, то возвращаем его
             log.info("The user exists in the database, attempt to return");
 
@@ -44,12 +45,20 @@ public class AuthService {
             //Если не существует, получаем данные о нем через VkService и сохраняем в бд, возвращая данные
             log.info("The user does not exist, attempting to add him to the database");
 
-            UserProfile userProfile = vkService.getUserInfo(vkAuthResponse);
+            //Получаем информацию о пользователе
+            UserProfile userProfile = userProfileService.getUserProfile(vkAuthResponse.userId());
+            //Создаем access и refresh токены
+            String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
+            String refreshToken = tokensService.generateRefreshToken();
+
+            //Сохраняем токены в БД
+            tokensService.create(userProfile.userVkId(), refreshToken);
+
             userProfileService.create(userProfile);
             return new AuthResponse(
                     userProfile,
-                    "Заглушка",
-                    "Заглушка"
+                    accessToken,
+                    refreshToken
             );
         }
     }
