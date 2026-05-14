@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 @Table(name = "usersprofile")
 @Entity
 public class UserProfileEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
 
     @Column(name = "user_vk_id")
@@ -26,7 +26,6 @@ public class UserProfileEntity {
     private String sex;
 
     public UserProfileEntity() {}
-
 
     public UserProfileEntity(Long id, Long userVkId, String firstName, String lastName, String avatar, String sex) {
         this.id = id;
