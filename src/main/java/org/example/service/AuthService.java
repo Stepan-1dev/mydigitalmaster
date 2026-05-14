@@ -53,9 +53,11 @@ public class AuthService {
             //Создаем access и refresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
+            log.info("Tokens were created successfully");
 
             //Сохраняем токены в БД
             tokensService.create(userProfile.userVkId(), refreshToken);
+            log.info("Tokens are saved in the database");
 
             return new AuthResponse(
                     userProfile,
