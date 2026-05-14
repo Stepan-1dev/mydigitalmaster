@@ -20,6 +20,9 @@ public class TokensService {
     }
 
     public void create(Long userId, String refreshToken){
+        //Удаялем предыдущую сессию(На всякий случай)
+        repository.deleteByUserId(userId);
+
         var entityToSave = new TokensEntity(
                 null,
                 userId,

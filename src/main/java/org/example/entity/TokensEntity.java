@@ -15,7 +15,7 @@ public class TokensEntity {
     @Column(name = "refresh_token", unique = true, nullable = false)
     private String refreshToken;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private long userId;
 
     @Column(name = "expiry_date", nullable = false)
