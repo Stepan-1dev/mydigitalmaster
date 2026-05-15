@@ -32,6 +32,11 @@ public class AuthService {
             //Создаем access и refresh, hashRefresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
+
+            //ДЛЯ ОТЛАДКИ
+            log.info("ACCESS MY TOKEN: " + accessToken);
+            log.info("REFRESH MY TOKEN: " + refreshToken);
+
             String hashedRefreshToken = tokensService.hashToken(refreshToken);
 
             log.info("Tokens were created successfully");

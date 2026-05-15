@@ -30,6 +30,10 @@ public class AuthController {
     @PostMapping("/api/auth/logout")
     public ResponseEntity<String> logout(@RequestBody String refreshToken){
         log.info("Called logout");
+
+        //УДАЛИТЬ
+        log.info("ANDREW TOKEN: " + refreshToken);
+
         authService.logout(refreshToken);
         return ResponseEntity.ok("Successfully logged out");
     }
