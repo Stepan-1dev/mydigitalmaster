@@ -9,11 +9,10 @@ import java.util.Optional;
 
 @Repository
 public interface TokensRepository extends JpaRepository<TokensEntity, Long> {
-    Optional<TokensEntity> findByRefreshToken(String refreshToken);
 
     @Modifying // Сообщаем Spring, что это не просто SELECT, а изменение данных
     @Transactional
-    void deleteByHashedRefreshToken(String refreshToken);
+    void deleteByHashedRefreshToken(String hashedRefreshToken);
 
     @Modifying // Сообщаем Spring, что это не просто SELECT, а изменение данных
     @Transactional // Разрешаем выполнение транзакции на уровне метода
