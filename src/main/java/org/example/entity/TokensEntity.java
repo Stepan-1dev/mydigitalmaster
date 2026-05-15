@@ -13,7 +13,7 @@ public class TokensEntity {
     private Long id;
 
     @Column(name = "refresh_token_hash", unique = true, nullable = false)
-    private String refreshTokenHash;
+    private String hashedRefreshToken;
 
     @Column(name = "user_id", nullable = false, unique = true)
     private long userId;
@@ -29,14 +29,6 @@ public class TokensEntity {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getRefreshToken() {
-        return refreshTokenHash;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshTokenHash = refreshToken;
     }
 
     public long getUserId() {
@@ -55,9 +47,17 @@ public class TokensEntity {
         this.expiryDate = expiryDate;
     }
 
+    public String getHashedRefreshToken() {
+        return hashedRefreshToken;
+    }
+
+    public void setHashedRefreshToken(String hashedRefreshToken) {
+        this.hashedRefreshToken = hashedRefreshToken;
+    }
+
     public TokensEntity(Long id, long userId, String refreshTokenHash, Instant expiryDate) {
         this.id = id;
-        this.refreshTokenHash = refreshTokenHash;
+        this.hashedRefreshToken = refreshTokenHash;
         this.userId = userId;
         this.expiryDate = expiryDate;
     }

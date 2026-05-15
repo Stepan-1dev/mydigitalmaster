@@ -75,9 +75,7 @@ public class AuthService {
     }
 
     public void logout(String refreshToken){
-        String hashedRefreshToken = tokensService.hashToken(refreshToken);
-
-        tokensService.deleteByRefreshToken(hashedRefreshToken);
+        tokensService.deleteByRefreshToken(refreshToken);
     }
 
     @Autowired

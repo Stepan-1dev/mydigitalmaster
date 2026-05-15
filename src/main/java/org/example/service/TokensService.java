@@ -40,8 +40,9 @@ public class TokensService {
     }
 
     @Transactional
-    public void deleteByRefreshToken(String hashedRefreshToken){
-        repository.deleteByRefreshToken(hashedRefreshToken);
+    public void deleteByRefreshToken(String refreshToken){
+        String hashedRefreshToken = hashToken(refreshToken);
+        repository.deleteByHashedRefreshToken(hashedRefreshToken);
     }
 
     public String hashToken(String rawToken) {
