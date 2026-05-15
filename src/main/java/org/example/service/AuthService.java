@@ -75,6 +75,7 @@ public class AuthService {
     }
 
     public void logout(String refreshToken){
+        log.info("Called logout");
         tokensService.deleteByRefreshToken(refreshToken);
     }
 

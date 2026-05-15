@@ -2,6 +2,8 @@ package org.example.service;
 
 import org.example.entity.TokensEntity;
 import org.example.repository.TokensRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +16,8 @@ import java.util.UUID;
 
 @Service
 public class TokensService {
+    private final Logger log = LoggerFactory.getLogger(TokensService.class);
+
     private TokensRepository repository;
 
     public TokensService(TokensRepository repository){
@@ -42,7 +46,8 @@ public class TokensService {
     @Transactional
     public void deleteByRefreshToken(String refreshToken){
         String hashedRefreshToken = hashToken(refreshToken);
-        repository.deleteByHashedRefreshToken(hashedRefreshToken);
+        int deletedCount = repository.deleteByHashedRefreshToken(hashedRefreshToken);
+        log.info("deletedCount = " + deletedCount);
     }
 
     public String hashToken(String rawToken) {

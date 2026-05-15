@@ -12,7 +12,7 @@ public interface TokensRepository extends JpaRepository<TokensEntity, Long> {
 
     @Modifying // Сообщаем Spring, что это не просто SELECT, а изменение данных
     @Transactional
-    void deleteByHashedRefreshToken(String hashedRefreshToken);
+    int deleteByHashedRefreshToken(String hashedRefreshToken);
 
     @Modifying // Сообщаем Spring, что это не просто SELECT, а изменение данных
     @Transactional // Разрешаем выполнение транзакции на уровне метода
