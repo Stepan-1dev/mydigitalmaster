@@ -48,6 +48,7 @@ public class TokensService {
         String hashedRefreshToken = hashToken(refreshToken);
         int deletedCount = repository.deleteByHashedRefreshToken(hashedRefreshToken);
         log.info("deletedCount = " + deletedCount);
+        log.info("hashRefreshToken: " + hashedRefreshToken);
     }
 
     public String hashToken(String rawToken) {
