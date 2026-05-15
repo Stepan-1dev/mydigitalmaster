@@ -25,18 +25,23 @@ public class TokensService {
     }
 
     @Transactional
-    public void create(Long userId, String refreshToken){
+    public void create(Long userId, String hashedRefreshToken){
         //Удаялем предыдущую сессию(На всякий случай)
         repository.deleteByUserId(userId);
 
         var entityToSave = new TokensEntity(
                 null,
                 userId,
-                refreshToken,
+                hashedRefreshToken,
                 Instant.now()
          );
 
         repository.save(entityToSave);
+    }
+
+    @Transactional
+    public void deleteByRefreshToken(String hashedRefreshToken){
+        repository.deleteByRefreshToken(hashedRefreshToken);
     }
 
     public String hashToken(String rawToken) {

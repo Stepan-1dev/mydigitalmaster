@@ -28,14 +28,16 @@ public class AuthService {
 
             //Получаем информацию о пользователе из БД
             UserProfile userProfile = userProfileService.getUserProfile(vkAuthResponse.userId());
-            //Создаем access и refresh токены
+
+            //Создаем access и refresh, hashRefresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
+            String hashedRefreshToken = tokensService.hashToken(refreshToken);
 
             log.info("Tokens were created successfully");
 
             //Сохраняем токены в БД
-            tokensService.create(userProfile.userVkId(), refreshToken);
+            tokensService.create(userProfile.userVkId(), hashedRefreshToken);
             log.info("Tokens are saved in the database");
 
             //Возвращаем ответ фронтенду
@@ -56,20 +58,26 @@ public class AuthService {
             //Создаем access и refresh, hashRefresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
-            String refreshTokenHash = tokensService.hashToken(refreshToken);
+            String hashedRefreshToken = tokensService.hashToken(refreshToken);
 
             log.info("Tokens were created successfully");
 
             //Сохраняем токены в БД
-            tokensService.create(userProfile.userVkId(), refreshToken);
+            tokensService.create(userProfile.userVkId(), hashedRefreshToken);
             log.info("Tokens are saved in the database");
 
             return new AuthResponse(
                     userProfile,
                     accessToken,
-                    refreshTokenHash
+                    refreshToken
             );
         }
+    }
+
+    public void logout(String refreshToken){
+        String hashedRefreshToken = tokensService.hashToken(refreshToken);
+
+        tokensService.deleteByRefreshToken(hashedRefreshToken);
     }
 
     @Autowired
