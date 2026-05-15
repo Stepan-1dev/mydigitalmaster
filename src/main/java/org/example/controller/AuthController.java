@@ -1,5 +1,6 @@
 package org.example.controller;
 import org.example.dto.AuthResponse;
+import org.example.dto.LogoutRequest;
 import org.example.entity.AuthInfoForLogin;
 import org.example.service.AuthService;
 import org.example.service.TokensService;
@@ -28,13 +29,13 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/logout")
-    public ResponseEntity<String> logout(@RequestBody String refreshToken){
+    public ResponseEntity<String> logout(@RequestBody LogoutRequest request){
         log.info("Called logout");
 
         //УДАЛИТЬ
-        log.info("ANDREW TOKEN: " + refreshToken);
+        //log.info("ANDREW TOKEN: " + refreshToken);
 
-        authService.logout(refreshToken);
+        authService.logout(request.refreshToken());
         return ResponseEntity.ok("Successfully logged out");
     }
 }
