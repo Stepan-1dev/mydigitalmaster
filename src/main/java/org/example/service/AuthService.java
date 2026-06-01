@@ -1,7 +1,10 @@
 package org.example.service;
 import org.example.dto.AuthResponse;
+import org.example.dto.RefreshRequest;
+import org.example.dto.RefreshResponse;
 import org.example.dto.VkAuthResponse;
 import org.example.entity.AuthInfoForLogin;
+import org.example.entity.TokensEntity;
 import org.example.entity.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +35,6 @@ public class AuthService {
             //Создаем access и refresh, hashRefresh токены
             String accessToken = jwtService.generateAccessToken(userProfile.userVkId());
             String refreshToken = tokensService.generateRefreshToken();
-
-            //ДЛЯ ОТЛАДКИ
-            log.info("ACCESS MY TOKEN: " + accessToken);
-            log.info("REFRESH MY TOKEN: " + refreshToken);
 
             String hashedRefreshToken = tokensService.hashToken(refreshToken);
 
@@ -69,7 +68,7 @@ public class AuthService {
 
             //Сохраняем токены в БД
             tokensService.create(userProfile.userVkId(), hashedRefreshToken);
-            log.info("Tokens are saved in the database");
+            log.info("Token are saved in the database");
 
             return new AuthResponse(
                     userProfile,
@@ -81,7 +80,41 @@ public class AuthService {
 
     public void logout(String refreshToken){
         log.info("Called logout");
-        tokensService.deleteByRefreshToken(refreshToken);
+        String hashedRefreshToken = tokensService.hashToken(refreshToken);
+        tokensService.deleteByHashedRefreshToken(hashedRefreshToken);
+    }
+
+    public RefreshResponse refresh(RefreshRequest refreshRequest) {
+        log.info("Called refresh");
+        //Достанем токен из тела запроса и хэшируем его
+        String hashedRefreshToken = tokensService.hashToken(refreshRequest.refreshToken());
+
+        //Достаем сущность токена из БД. Если его нету, то бросается исключение
+        TokensEntity tokensEntity = tokensService.findByHashedRefreshToken(hashedRefreshToken);
+
+        //Получаем userId из тела сущности токена
+        long userId = tokensEntity.getUserId();
+
+        //Валидируем токен, проверяем не истек ли он. Если токен истек, то бросается исключение
+        tokensService.validateExpiry(tokensEntity);
+
+        //Удаляем сессию со старым токеном
+        tokensService.deleteByHashedRefreshTokenAndUserId(hashedRefreshToken, userId);
+
+        //Генерируем новую пару токенов(Для access токена берем userID из сущности токена из БД
+        String newAccessToken = jwtService.generateAccessToken(userId);
+        String newRefreshToken = tokensService.generateRefreshToken();
+        String newHashedRefreshToken = tokensService.hashToken(newRefreshToken);
+        log.info("Tokens were created successfully");
+
+        //Создаем новую запись в БД
+        tokensService.create(userId, newHashedRefreshToken);
+        log.info("Tokens are saved in the database");
+
+        return new RefreshResponse(
+                newAccessToken,
+                newRefreshToken
+        );
     }
 
     @Autowired
@@ -91,5 +124,6 @@ public class AuthService {
         this.tokensService = tokensService;
         this.jwtService = jwtService;
     }
+
 }
 

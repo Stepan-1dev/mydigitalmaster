@@ -1,6 +1,8 @@
 package org.example.service;
 
 import org.example.entity.TokensEntity;
+import org.example.exception.TokenExpiredException;
+import org.example.exception.TokenNotFoundException;
 import org.example.repository.TokensRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +13,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,25 +34,40 @@ public class TokensService {
 
     @Transactional
     public void create(Long userId, String hashedRefreshToken){
-        //Удаялем предыдущую сессию(На всякий случай)
-        repository.deleteByUserId(userId);
-
         var entityToSave = new TokensEntity(
                 null,
                 userId,
                 hashedRefreshToken,
-                Instant.now()
+                Instant.now().plus(30, ChronoUnit.DAYS)
          );
 
         repository.save(entityToSave);
     }
 
     @Transactional
-    public void deleteByRefreshToken(String refreshToken){
-        String hashedRefreshToken = hashToken(refreshToken);
-        int deletedCount = repository.deleteByHashedRefreshToken(hashedRefreshToken);
-        log.info("deletedCount = " + deletedCount);
-        log.info("hashRefreshToken: " + hashedRefreshToken);
+    public void deleteByHashedRefreshTokenAndUserId(String hashedRefreshToken,long userId){
+        repository.deleteByHashedRefreshTokenAndUserId(hashedRefreshToken, userId);
+    }
+
+    @Transactional
+    public void deleteByHashedRefreshToken(String hashedRefreshToken){
+        repository.deleteByHashedRefreshToken(hashedRefreshToken);    }
+
+    @Transactional
+    public TokensEntity findByHashedRefreshToken(String hashedRefreshToken){
+        return repository.findByHashedRefreshToken(hashedRefreshToken)
+                .orElseThrow(() -> new TokenNotFoundException("Данная сессия не найдена"));
+    }
+
+    public void validateExpiry(TokensEntity tokensEntity){
+        if(tokensEntity.getExpiryDate().isBefore(Instant.now())){
+
+            //Удаляем базу от истекшего токена
+            repository.deleteByHashedRefreshToken(tokensEntity.getHashedRefreshToken());
+
+            //Выкидываем ошибку, что токен истек
+            throw new TokenExpiredException("Данный токен истек");
+        }
     }
 
     public String hashToken(String rawToken) {
@@ -65,3 +84,5 @@ public class TokensService {
         }
     }
 }
+
+
