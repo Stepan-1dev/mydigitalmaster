@@ -50,7 +50,7 @@ public class AuthFilter extends OncePerRequestFilter{
         log.info("Получаем строку с токеном");
         //Получаем чистую строку с токеном
         String accessToken = authHeader.substring(7);
-        log.info("Чистый токен:");
+        log.info("Чистый токен:" + accessToken);
 
         try {
             log.info("Проверяем подписан ли мной токен");
