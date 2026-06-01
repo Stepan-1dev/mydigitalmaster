@@ -89,7 +89,7 @@ public class AuthService {
         //Достанем токен из тела запроса и хэшируем его
         String hashedRefreshToken = tokensService.hashToken(refreshRequest.refreshToken());
 
-        //Достаем сущность токена из БД. Если его нету, то бросается исключение
+        //Достаем сущность токена из БД. Если его нет, то бросается исключение
         TokensEntity tokensEntity = tokensService.findByHashedRefreshToken(hashedRefreshToken);
 
         //Получаем userId из тела сущности токена
