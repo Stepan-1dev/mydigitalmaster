@@ -34,8 +34,9 @@ public class AuthFilter extends OncePerRequestFilter{
         log.info("Проверка. Есть ли заголовок в запросе");
         String authHeader = request.getHeader("Authorization");
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
-            //Если токена нет, то пусть разбираются дальш е
+            //Если токена нет, то пусть разбираются дальше
             log.info("Токен не найден");
+            log.info("Токен:" + authHeader);
             chain.doFilter(request, response);
             return;
         }
