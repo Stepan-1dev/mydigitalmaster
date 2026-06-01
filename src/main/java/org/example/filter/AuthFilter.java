@@ -28,6 +28,12 @@ public class AuthFilter extends OncePerRequestFilter{
         this.jwtService = jwtService;
     }
 
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/auth/");
+    }
+
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         //Проверяем, есть ли токен в заголовках
@@ -36,7 +42,6 @@ public class AuthFilter extends OncePerRequestFilter{
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             //Если токена нет, то пусть разбираются дальше
             log.info("Токен не найден");
-            log.info("Токен:" + authHeader);
             chain.doFilter(request, response);
             return;
         }
