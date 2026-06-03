@@ -7,6 +7,7 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-dezen}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-easypasswordacheehedelat}
       - JWT_SECRET=${JWT_SECRET}
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
     ports:
       - "127.0.0.1:9090:8080"
       - "[::1]:9090:8080"
@@ -37,5 +38,73 @@ services:
       timeout: 5s
       retries: 5
 
+  # 3. Брокер сообщений (Kafka) — ПЕРЕЕХАЛ СЮДА
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=broker,controller
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093,EXTERNAL://0.0.0.0:29092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:29092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: [ "CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    healthcheck:
+      test: [ "CMD-SHELL", "ollama list >/dev/null 2>&1 || exit 1" ]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
+
+
+  ai-worker:
+    build:
+      context: ../AI-digital-master
+    container_name: ai-worker
+    depends_on:
+      kafka:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    environment:
+      - OLLAMA_MODEL=qwen2.5:1.5b
+      - OLLAMA_URL=http://ollama:11434/api/chat
+      - OLLAMA_NUM_PARALLEL=3
+      - OLLAMA_CONTEXT_LENGTH=2048
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - INPUT_TOPIC=ai_prompts
+      - OUTPUT_TOPIC=ai_responses
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  kafka_data:
+  ollama_data:
