@@ -48,7 +48,8 @@ services:
       - "9092:9092"
       - "29092:29092"
     environment:
-    - KAFKA_NODE_ID=1
+      - KAFKA_MODE=controller
+      - KAFKA_NODE_ID=1
       - KAFKA_PROCESS_ROLES=broker,controller
       - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:29093
       - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093,EXTERNAL://0.0.0.0:29092
