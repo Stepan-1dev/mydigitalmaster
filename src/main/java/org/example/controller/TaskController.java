@@ -64,8 +64,8 @@ public class TaskController {
             // Отправляем и асинхронно ждем результат
             RequestReplyFuture<String, String, String> replyFuture = replyingKafkaTemplate.sendAndReceive(record);
 
-            // Блокируем поток максимум на 15 секунд в ожидании ответа от ИИ
-            var consumerRecord = replyFuture.get(15, TimeUnit.SECONDS);
+            // Блокируем поток максимум на 60 секунд в ожидании ответа от ИИ
+            var consumerRecord = replyFuture.get(60, TimeUnit.SECONDS);
 
             log.info("[ID: {}] Получен ответ от ИИ воркера!", requestId);
 
