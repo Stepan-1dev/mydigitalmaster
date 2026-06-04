@@ -98,6 +98,7 @@ services:
       ollama:
         condition: service_healthy
     environment:
+      - PYTHONUNBUFFERED=1
       - OLLAMA_MODEL=qwen2.5:1.5b
       - OLLAMA_URL=http://ollama:11434/api/chat
       - OLLAMA_NUM_PARALLEL=3
