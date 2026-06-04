@@ -71,7 +71,7 @@ public class KafkaConfig {
             ConcurrentMessageListenerContainer<String, String> repliesContainer) {
 
         ReplyingKafkaTemplate<String, String, String> replyTemplate = new ReplyingKafkaTemplate<>(pf, repliesContainer);
-        replyTemplate.setDefaultReplyTimeout(Duration.ofSeconds(20)); // Таймаут на размышления ИИ
+        replyTemplate.setDefaultReplyTimeout(Duration.ofSeconds(60)); // Таймаут на размышления ИИ
         return replyTemplate;
     }
 }
