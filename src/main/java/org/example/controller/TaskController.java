@@ -74,7 +74,7 @@ public class TaskController {
             JsonNode rootNode = objectMapper.readTree(consumerRecord.value());
             String aiRawResponse = rootNode.get("response").asText();
 
-            // Теперь парс им саму внутреннюю строку от ИИ в наш красивый TaskAnalyzeResponse
+            // Теперь парс им саму внутреннюю строку от ИИ в н аш красивый TaskAnalyzeResponse
             TaskAnalyzeResponse responseDto = objectMapper.readValue(aiRawResponse, TaskAnalyzeResponse.class);
 
             return ResponseEntity.ok(responseDto);
